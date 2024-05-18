@@ -1,0 +1,17 @@
+#Magnetic-susceptibility distortion correction: Geometric distortions arising from local magnetic inhomogeneities. Correction is done on images with b values = 0.
+#Eddy-current distortion correction: Distortions that arise in diffusion weighted imaging due to applying diffusion gradients. b-values would be non-zero for these images. 
+#Tract-based Spatial Statistics (TBSS): collective preprocessing of all FA images to create mean white matter skeleton for all subjects for group level analysis.
+
+#Maximum magnetic susceptibility is visible when we merge the A-P and P-A or L-R and R-L phase encoded images to get net distortion.
+#Creating a text file with info on A-P and P-A phase encoding directions and total read out time of images in a 2X2 matrix form (acquisition parameters).
+#Topup command is used obtain correction parameters for magnetic susc. Distortion (where input is the merged AP-PA image)
+
+topup --imain=AP_PA_b0 \ --datain=acqparams.txt \ --config=b02b0.cnf \ --out=topup_AP_PA_b0 \ --iout=topup_AP_PA_b0_iout \ --fout=topup_AP_PA_b0_fout
+
+#I/P file: merged A-P P-A file. O/P file: topup_AP_PA_b0 generated contains info on susceptibility corrected images. 
+
+#Use ‘applytopup’ command to generate distortion corrected file.
+
+applytopup --imain=AP, PA \ --topup=topup_AP_PA_b0 \ --datain=acqparams.txt \ --inindex=1,2 \ --out=hifi_nodif
+
+#This output file hifi_nodif is now susceptibility corrected and will used for eddy current correction.
